@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────────────────────────────────
+   Vokel.Studios token layer
+   Cool/neutral paper-and-ink. One signal accent (high-voltage canary yellow),
+   used only as a fill behind ink or an interaction state — never as text.
+   Display = Space Grotesk · Body = Inter · Mono = JetBrains Mono (utility layer).
+   ─────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-paper: #f6f6f4;
+  --color-ink: #0a0a0a;
+  --color-meta: #8a8a87;
+  --color-hairline: #e2e2de;
+  --color-signal: #e6ff00;
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", monospace;
+
+  /* Generous outer margins; content max width with wide gutters. */
+  --gutter: clamp(1.25rem, 5vw, 6rem);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  /* Visible keyboard focus everywhere; ink ring on paper. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Shared horizontal rhythm. */
+  .vk-wrap {
+    padding-inline: var(--gutter);
+  }
+
+  /* The mono utility layer — indices, tags, clock, eyebrows. */
+  .vk-mono {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    color: var(--color-meta);
+  }
+
+  .vk-hairline {
+    border-color: var(--color-hairline);
+  }
+
+  /* Scroll-reveal primitive (driven by IntersectionObserver in Reveal.tsx). */
+  .vk-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .vk-reveal[data-shown="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vk-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* Marquee track. */
+  .vk-marquee-track {
+    display: inline-flex;
+    white-space: nowrap;
+    animation: vk-marquee 32s linear infinite;
+  }
+  @keyframes vk-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vk-marquee-track {
+      animation: none;
+    }
+  }
+}
